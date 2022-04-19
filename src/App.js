@@ -1,27 +1,76 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-// import axios from 'axios';
+import Button from 'react-bootstrap/Button';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+      this.state = {
+        navigationData:[],
+        navigationName: 'Location: ',
+        long: 0,
+        lat: 0
+
+
+      };
+    }
+    
+    
+    
+    
+    
+    handleCityInput = (e) => {
+      console.log(e.target.value);
+      this.setState({
+        city: e.target.value
+        
+      });
+    }
+    
+    handleSubmit = async (e) => {
+      e.preventDefault();
+      let url = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&q=${this.state.city}&format=json`;
+      let navigationData = await axios.get(url);
+
+      let lat = navigationData.data[0].lat
+      let lon = navigationData.data[0].lon
+      let displayName = navigationData.data[0].display_name
+
+      this.setState({
+        lon: lon,
+        lat: lat, 
+        displayName: displayName
+
+      });
+
+      console.log(navigationData);
+      // console.log(this.state.city);
+  
+    }
+  // get city data?
+  
+  
+  render() { 
+    return (
+      <>
+      <h1> Data from an API</h1>
+      <form onSubmit={this.handleSubmit}>
+      
+        <label>Pick a City
+          <input type="text" onInput={this.handleCityInput}/>
+        </label>
+        <Button type='submit'>Explore</Button>
+      </form>
+      </>
+    )
+  }
 }
+
+
+
 
 export default App;
