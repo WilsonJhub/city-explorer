@@ -1,8 +1,9 @@
 import React from 'react';
 import './App.css';
-import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import { Card, Button } from 'react-bootstrap';
+
 
 
 
@@ -14,8 +15,9 @@ class App extends React.Component {
       navigationName: 'Location: ',
       lon: 0,
       lat: 0,
-
-
+      clickExplore: false,
+      error: false,
+      errorMessage: ''
     };
   }
 
@@ -40,13 +42,15 @@ class App extends React.Component {
       let navigationData = await axios.get(url);
       let lon = navigationData.data[0].lon
       let lat = navigationData.data[0].lat
-
       let displayName = navigationData.data[0].display_name
+      // clickExplore: true
+
 
       this.setState({
         lon: lon,
         lat: lat,
         displayName: displayName
+
 
       });
       console.log(navigationData);
@@ -62,8 +66,7 @@ class App extends React.Component {
 
     
     
-    
-    // get city data?
+
   
   
 
@@ -72,6 +75,37 @@ class App extends React.Component {
     render() {
       return (
         <>
+        <Card
+          style={{
+            height: '60%',
+            width: '60%',
+            padding: '6em',
+            color: 'grey',
+            backgroundColor: 'white',
+            borderRadius: '6em'
+          }}/>
+        
+        
+        <Card.Body>
+          <Card.Title>
+            {this.state.navigationName}
+          </Card.Title>
+          <Card.Text>
+              Lon: {this.state.lon}
+            </Card.Text>
+            <Card.Text>
+              Lat: {this.state.lat}
+            </Card.Text>
+        </Card.Body>
+        {
+          this.state.Explore
+          ?
+          <Card.Img variant="bottom" src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONAPI}&center=${this.state.lat},${this.state.lon}&zoom=12`} />
+          :
+          <Card.Img variant="bottom" />
+        }
+
+
           <h1> Data from an API</h1>
           <form onSubmit={this.handleSubmit}>
 
