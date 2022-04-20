@@ -11,13 +11,15 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      displayName: '',
       navigationData: [],
       navigationName: 'Location: ',
       lon: 0,
       lat: 0,
       clickExplore: false,
+      url: '',
       error: false,
-      errorMessage: ''
+      errorMessage: '',
     };
   }
 
@@ -38,41 +40,40 @@ class App extends React.Component {
 
     try {
       let url = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&q=${this.state.city}&format=json`;
-
+      
       let navigationData = await axios.get(url);
       let lon = navigationData.data[0].lon
       let lat = navigationData.data[0].lat
       let displayName = navigationData.data[0].display_name
-      // clickExplore: true
-
-
+      let base_Url = 'https://maps.locationiq.com/v3/staticmap';
+      let map_Url = `${base_Url}?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&center=${lat},${lon}&zoom=10&format=jpg`;
+      // console.log(url);
+      
       this.setState({
         lon: lon,
         lat: lat,
-        displayName: displayName
-
-
+        displayName: displayName,
+        url: map_Url,
       });
-      console.log(navigationData);
-
+      
+  
     } catch (error){
-        console.log('error: ', error.response);
-        this.setState({
-          error: true,
-          errorMessage: `An Error Occurred: ${error.response.status}`
-        })
-      }
+      
+      this.setState({
+        error: true,
+        errorMessage: `An Error Occurred: ${error.response.status}`
+      })
+    }
   }
-
+  
     
     
-
-  
-  
-
-
 
     render() {
+      // console.log(this.state.navigationData);
+      // let navData = this.state.navigationData.map((char, idx) => {
+      //   return <li key={idx}>{char.name}</li>
+      // })
       return (
         <>
         <Card
@@ -97,13 +98,10 @@ class App extends React.Component {
               Lat: {this.state.lat}
             </Card.Text>
         </Card.Body>
-        {
-          this.state.Explore
-          ?
-          <Card.Img variant="bottom" src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONAPI}&center=${this.state.lat},${this.state.lon}&zoom=12`} />
-          :
-          <Card.Img variant="bottom" />
-        }
+        <>
+        {this.state.url && <img src={this.state.url} alt={this.state.displayName}></img>}
+        
+        </>
 
 
           <h1> Data from an API</h1>
@@ -114,6 +112,11 @@ class App extends React.Component {
             </label>
             <Button type='submit'>Explore</Button>
           </form>
+          
+          {this.state.error && <p>{this.state.errorMessage}</p>}
+          
+          
+        
         </>
 
       )
