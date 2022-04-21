@@ -3,7 +3,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { Card, Button } from 'react-bootstrap';
-
+import Weather from './Weather';
 
 
 
@@ -20,6 +20,9 @@ class App extends React.Component {
       url: '',
       error: false,
       errorMessage: '',
+      city: '',
+      weather: [],
+      showWeather:false
     };
   }
 
@@ -64,13 +67,31 @@ class App extends React.Component {
         errorMessage: `An Error Occurred: ${error.response.status}`
       })
     }
+    this.getWeather(this.state.city)
   }
   
+  getWeather = async (name) => {
+    try{
+      let url = `${process.env.REACT_APP_SERVER}/weather?searchQuery=${this.state.city}`
+      let weatherResponse = await axios.get(url)
+      this.setState({
+        weather: weatherResponse.data,
+        showWeather: true
+      })
+    }catch(error){
+      this.setState({
+        error: true,
+        errorMessage: error.message,
+        showWeather: false
+      })
+
+    }
+  } 
     
     
 
     render() {
-      // console.log(this.state.navigationData);
+      console.log(this.state);
       // let navData = this.state.navigationData.map((char, idx) => {
       //   return <li key={idx}>{char.name}</li>
       // })
@@ -104,6 +125,7 @@ class App extends React.Component {
         </>
 
 
+
           <h1> Data from an API</h1>
           <form onSubmit={this.handleSubmit}>
 
@@ -113,6 +135,14 @@ class App extends React.Component {
             <Button type='submit'>Explore</Button>
           </form>
           
+          {this.state.showWeather && 
+          <Weather weatherData={this.state.weather} />
+          
+
+          
+          }
+
+
           {this.state.error && <p>{this.state.errorMessage}</p>}
           
           
