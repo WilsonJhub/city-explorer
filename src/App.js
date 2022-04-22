@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { Card, Button } from 'react-bootstrap';
 import Weather from './Weather';
+import Movie from './Movie';
 
 
 
@@ -22,7 +23,9 @@ class App extends React.Component {
       errorMessage: '',
       city: '',
       weather: [],
-      showWeather:false
+      showWeather:false,
+      movies:[],
+      showMovies: false
     };
   }
 
@@ -43,14 +46,17 @@ class App extends React.Component {
 
     try {
       let url = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&q=${this.state.city}&format=json`;
-      
+
       let navigationData = await axios.get(url);
       let lon = navigationData.data[0].lon
       let lat = navigationData.data[0].lat
       let displayName = navigationData.data[0].display_name
       let base_Url = 'https://maps.locationiq.com/v3/staticmap';
       let map_Url = `${base_Url}?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&center=${lat},${lon}&zoom=10&format=jpg`;
-      // console.log(url);
+
+
+      
+
       
       this.setState({
         lon: lon,
@@ -59,6 +65,8 @@ class App extends React.Component {
         url: map_Url,
       });
       
+      this.getWeather(this.state.city);
+      this.getMovies(this.state.city);
   
     } catch (error){
       
@@ -67,13 +75,16 @@ class App extends React.Component {
         errorMessage: `An Error Occurred: ${error.response.status}`
       })
     }
-    this.getWeather(this.state.city)
   }
   
   getWeather = async (name) => {
     try{
-      let url = `${process.env.REACT_APP_SERVER}/weather?searchQuery=${this.state.city}`
+      console.log(name);
+      let url = `${process.env.REACT_APP_SERVER}/weather?searchQuery=${name}`
       let weatherResponse = await axios.get(url)
+      
+
+      console.log(weatherResponse);
       this.setState({
         weather: weatherResponse.data,
         showWeather: true
@@ -88,13 +99,39 @@ class App extends React.Component {
     }
   } 
     
-    
+    // ************************ MOVIES ************************
+
+  getMovies = async (cityName) => {
+    try{
+      
+      let url = `${process.env.REACT_APP_SERVER}/movie?searchQuery=${cityName}`
+      let movieResponse = await axios.get(url)
+      
+      console.log('*******************', movieResponse, '*********************************************************************************************ASdfsafdsaf*');
+      
+      this.setState({
+          movies: movieResponse.data,
+          showMovies: true
+        })
+
+    }catch(error){
+      this.setState({
+        error: true,
+        errorMessage: error.message,
+        showMovies: false
+      })
+
+    }
+  } 
+
+// ************************ MOVIES ************************
+
+
+
+
 
     render() {
-      console.log(this.state);
-      // let navData = this.state.navigationData.map((char, idx) => {
-      //   return <li key={idx}>{char.name}</li>
-      // })
+
       return (
         <>
         <Card
@@ -134,19 +171,26 @@ class App extends React.Component {
             </label>
             <Button type='submit'>Explore</Button>
           </form>
-          
+
+          {/* **************************** WEATHER **************************** */}
+
           {this.state.showWeather && 
           <Weather weatherData={this.state.weather} />
-          
-
-          
           }
+          {/* **************************** WEATHER **************************** */}
+
+
+          {/* **************************** MOVIE **************************** */}
+          
+          {/* {this.state.showMovies &&
+          <Movie movieData={this.state.movies} /> */}
+          }
+          {/* **************************** MOVIE **************************** */}
+
 
 
           {this.state.error && <p>{this.state.errorMessage}</p>}
-          
-          
-        
+
         </>
 
       )
@@ -157,4 +201,3 @@ class App extends React.Component {
 export default App;
 
 
-//editing for Allen Brazier comment
