@@ -104,10 +104,10 @@ class App extends React.Component {
   getMovies = async (cityName) => {
     try{
       
-      let url = `${process.env.REACT_APP_SERVER}/movie?searchQuery=${cityName}`
+      let url = `${process.env.REACT_APP_SERVER}/movies?searchQuery=${cityName}`
       let movieResponse = await axios.get(url)
       
-      console.log('*******************', movieResponse, '*********************************************************************************************ASdfsafdsaf*');
+      console.log('*******************', movieResponse.data, '*********************************************************************************************ASdfsafdsaf*');
       
       this.setState({
           movies: movieResponse.data,
@@ -182,8 +182,8 @@ class App extends React.Component {
 
           {/* **************************** MOVIE **************************** */}
           
-          {/* {this.state.showMovies &&
-          <Movie movieData={this.state.movies} /> */}
+          {this.state.showMovies &&
+          <Movie movieData={this.state.movies} />
           }
           {/* **************************** MOVIE **************************** */}
 
