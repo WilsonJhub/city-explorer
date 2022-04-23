@@ -107,7 +107,7 @@ class App extends React.Component {
       let url = `${process.env.REACT_APP_SERVER}/movies?searchQuery=${cityName}`
       let movieResponse = await axios.get(url)
       
-      console.log('*******************', movieResponse.data, '*********************************************************************************************ASdfsafdsaf*');
+      console.log('*******************', movieResponse.data, '**********************************************************************************************');
       
       this.setState({
           movies: movieResponse.data,
@@ -172,20 +172,20 @@ class App extends React.Component {
             <Button type='submit'>Explore</Button>
           </form>
 
-          {/* **************************** WEATHER **************************** */}
+          {/* **************************** DISPLAY WEATHER DATA ON CLIENT **************************** */}
 
           {this.state.showWeather && 
           <Weather weatherData={this.state.weather} />
           }
-          {/* **************************** WEATHER **************************** */}
+          {/* **************************** DISPLAY WEATHER DATA ON CLIENT **************************** */}
 
 
-          {/* **************************** MOVIE **************************** */}
+          {/* **************************** DISPLAY MOVIE DATA ON CLIENT **************************** */}
           
           {this.state.showMovies &&
           <Movie movieData={this.state.movies} />
           }
-          {/* **************************** MOVIE **************************** */}
+          {/* **************************** DISPLAY MOVIE DATA ON CLIENT **************************** */}
 
 
 
